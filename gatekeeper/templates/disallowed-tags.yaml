@@ -1,0 +1,43 @@
+# Template: cấm image dùng tag bị cấm (vd :latest). (gatekeeper-library style)
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sdisallowedtags
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sDisallowedTags
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            tags:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sdisallowedtags
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.template.spec.containers[_]
+          tag := input.parameters.tags[_]
+          endswith(container.image, concat(":", ["", tag]))
+          msg := sprintf("container <%v> dùng tag bị cấm :%v (image %v)", [container.name, tag, container.image])
+        }
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          tag := input.parameters.tags[_]
+          endswith(container.image, concat(":", ["", tag]))
+          msg := sprintf("container <%v> dùng tag bị cấm :%v (image %v)", [container.name, tag, container.image])
+        }
+        # cấm luôn image không có tag (mặc định :latest)
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          not contains(container.image, ":")
+          msg := sprintf("container <%v> không pin tag (image %v)", [container.name, container.image])
+        }

@@ -1,23 +1,29 @@
-# ArgoCD App: Deploy AnalysisTemplate cho canary analysis
+# ArgoCD App: ClusterImagePolicy từ fork. Wave 2 = sau policy-controller.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: analysis
+  name: policies
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
   source:
     repoURL: https://github.com/taitri2004/W10-exercise.git
-    path: app-analysis
+    path: policies
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc
-    namespace: demo
+    namespace: cosign-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
     - ServerSideApply=true
+    retry:
+      limit: 10
+      backoff:
+        duration: 15s
+        maxDuration: 3m
+        factor: 2

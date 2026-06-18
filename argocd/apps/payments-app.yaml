@@ -1,20 +1,21 @@
-# ArgoCD App: Deploy AnalysisTemplate cho canary analysis
+# Bài lớn — App workload team B (apps/payments/). Wave 4 = sau khi hạ tầng tenant
+# + guardrail đã sẵn sàng. Kế thừa Gatekeeper + signature, KHÔNG luật mới.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: analysis
+  name: payments-app
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   project: default
   source:
     repoURL: https://github.com/taitri2004/W10-exercise.git
-    path: app-analysis
+    path: apps/payments
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc
-    namespace: demo
+    namespace: payments
   syncPolicy:
     automated:
       prune: true

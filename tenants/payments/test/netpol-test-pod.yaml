@@ -1,0 +1,28 @@
+# Bài lớn #3 (chứng minh) — pod trong payments thử gọi sang demo.
+# Tuân thủ Gatekeeper (pin tag + limits + owner) để được admit, rồi test mạng.
+# Apply tay (test/ không sync), xem log:
+#   kubectl apply -f tenants/payments/test/netpol-test-pod.yaml
+#   kubectl -n payments logs netpol-test
+# Kỳ vọng: gọi api.demo -> TIMEOUT (bị NetworkPolicy chặn); DNS vẫn phân giải.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: netpol-test
+  namespace: payments
+  labels:
+    owner: team-payments
+spec:
+  restartPolicy: Never
+  containers:
+    - name: curl
+      image: curlimages/curl:8.10.1
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          echo "[1] cross-namespace call -> demo/api (ky vong: BI CHAN/timeout)";
+          curl -s -m 5 http://api.demo.svc.cluster.local && echo "  REACHED (sai - netpol chua chan)" || echo "  BLOCKED (dung)";
+          echo "[2] DNS resolve (ky vong: OK)";
+          nslookup api.demo.svc.cluster.local >/dev/null 2>&1 && echo "  DNS OK" || echo "  DNS fail";
+      resources:
+        requests: { cpu: 10m, memory: 16Mi }
+        limits: { cpu: 50m, memory: 32Mi }

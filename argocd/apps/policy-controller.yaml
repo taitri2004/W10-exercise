@@ -1,23 +1,24 @@
-# ArgoCD App: Deploy AnalysisTemplate cho canary analysis
+# ArgoCD App: cài Sigstore Policy Controller (Helm). Wave 0 = sớm.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: analysis
+  name: policy-controller
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
-    repoURL: https://github.com/taitri2004/W10-exercise.git
-    path: app-analysis
-    targetRevision: main
+    repoURL: https://sigstore.github.io/helm-charts
+    chart: policy-controller
+    targetRevision: 0.9.0
   destination:
     server: https://kubernetes.default.svc
-    namespace: demo
+    namespace: cosign-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
+    - CreateNamespace=true
     - ServerSideApply=true

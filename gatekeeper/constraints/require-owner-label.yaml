@@ -1,0 +1,14 @@
+# Lab 1.3 — Custom: bắt buộc workload có label `owner`.
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequireOwnerLabel
+metadata:
+  name: require-owner-label
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces: ["demo", "payments"]

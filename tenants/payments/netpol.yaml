@@ -1,0 +1,36 @@
+# Bài lớn #3 — cô lập mạng. Cần CNI enforce (minikube --cni=calico).
+# (1) default-deny INGRESS: chặn mọi traffic VÀO payments.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: payments
+spec:
+  podSelector: {}
+  policyTypes: ["Ingress"]
+  # không có ingress rule = deny tất cả
+---
+# (2) EGRESS chỉ cho cùng namespace + DNS. Đây mới là cái chặn payments GỌI RA
+#     service của demo (deny-ingress một mình KHÔNG chặn được egress).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: egress-same-ns-and-dns
+  namespace: payments
+spec:
+  podSelector: {}
+  policyTypes: ["Egress"]
+  egress:
+    # cho gọi trong cùng namespace payments
+    - to:
+        - podSelector: {}
+    # cho phép DNS tới CoreDNS (kube-system)
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

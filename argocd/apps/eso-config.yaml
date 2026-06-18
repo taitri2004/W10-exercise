@@ -1,16 +1,17 @@
-# ArgoCD App: Deploy AnalysisTemplate cho canary analysis
+# ArgoCD App: SecretStore + ExternalSecret + consumer từ fork. Wave 2 = sau ESO operator.
+# retry vì CRD (ClusterSecretStore/ExternalSecret) do operator cài, phải có trước.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: analysis
+  name: eso-config
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
   source:
     repoURL: https://github.com/taitri2004/W10-exercise.git
-    path: app-analysis
+    path: eso
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc
@@ -21,3 +22,9 @@ spec:
       selfHeal: true
     syncOptions:
     - ServerSideApply=true
+    retry:
+      limit: 10
+      backoff:
+        duration: 15s
+        maxDuration: 3m
+        factor: 2

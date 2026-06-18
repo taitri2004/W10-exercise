@@ -1,0 +1,11 @@
+# Bài lớn — ns payments cho team B. Sync-wave sớm để mọi resource tenant trỏ vào.
+# KHÔNG gắn label policy.sigstore.dev/include=true ở đây — gắn SAU khi image team B
+# đã ký (gắn trước sẽ chặn luôn). Xem README.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: payments
+  labels:
+    team: payments
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"

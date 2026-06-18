@@ -54,13 +54,44 @@ jobs:
             type=raw,value=${{ steps.semver.outputs.version }}
             type=sha,prefix=v${{ steps.semver.outputs.version }}-
 
-      - name: Build and push Docker image
+      # Lab 2.2a (F-05): build (chưa push) rồi Trivy scan trước khi đẩy lên registry
+      - name: Build image (load, no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./src/api
+          push: false
+          load: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:scan
+
+      - name: Trivy scan (fail on HIGH/CRITICAL)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:scan
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
+
+      - name: Push Docker image
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: ./src/api
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      # Lab 2.2b (F-06): ký image theo digest bằng cosign key-based
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Cosign sign (key-based, theo digest)
+        env:
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          echo "${{ secrets.COSIGN_PRIVATE_KEY }}" > cosign.key
+          cosign sign --yes --key cosign.key \
+            "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}"
+          rm -f cosign.key
 
       - name: Update rollout.yaml with new version
         run: |

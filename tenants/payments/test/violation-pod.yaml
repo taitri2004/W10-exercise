@@ -1,0 +1,14 @@
+# Bài lớn #4 (chứng minh) — manifest VI PHẠM trong payments, phải bị CONSTRAINT CŨ chặn:
+#  - image :latest (block-latest-tag) · không có limits (require-limits)
+#  - thiếu label owner (require-owner-label)
+# Nằm trong test/ -> ArgoCD KHÔNG sync (apply tay để demo reject):
+#   kubectl apply -f tenants/payments/test/violation-pod.yaml   # -> bị từ chối
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-pod
+  namespace: payments
+spec:
+  containers:
+    - name: app
+      image: nginx:latest

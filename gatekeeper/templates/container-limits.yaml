@@ -1,0 +1,30 @@
+# Template: bắt buộc container set cpu + memory limits.
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8scontainerlimits
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sContainerLimits
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8scontainerlimits
+
+        containers[c] { c := input.review.object.spec.template.spec.containers[_] }
+        containers[c] { c := input.review.object.spec.containers[_] }
+
+        violation[{"msg": msg}] {
+          c := containers[_]
+          not c.resources.limits.cpu
+          msg := sprintf("container <%v> thiếu cpu limit", [c.name])
+        }
+        violation[{"msg": msg}] {
+          c := containers[_]
+          not c.resources.limits.memory
+          msg := sprintf("container <%v> thiếu memory limit", [c.name])
+        }

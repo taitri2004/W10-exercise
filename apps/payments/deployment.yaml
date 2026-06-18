@@ -1,0 +1,35 @@
+# Bài lớn #4 — app team B. KẾ THỪA guardrail cũ (không viết luật mới):
+# tuân thủ Gatekeeper (pin tag, limits, non-root, label owner) + dùng image ĐÃ KÝ.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-api
+  namespace: payments
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: payments-api }
+  template:
+    metadata:
+      labels:
+        app: payments-api
+        owner: team-payments
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: ghcr.io/taitri2004/w10-api:0.0.1   # image ĐÃ KÝ ở Lab 2.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 200m, memory: 128Mi }

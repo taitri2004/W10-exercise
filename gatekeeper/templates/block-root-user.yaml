@@ -1,0 +1,32 @@
+# Template: cấm container/pod set runAsUser: 0 (chạy root).
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sblockrootuser
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sBlockRootUser
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sblockrootuser
+
+        violation[{"msg": msg}] {
+          c := containers[_]
+          c.securityContext.runAsUser == 0
+          msg := sprintf("container <%v> set runAsUser: 0 (root) — bị cấm", [c.name])
+        }
+        violation[{"msg": msg}] {
+          podsc[_].runAsUser == 0
+          msg := "pod set runAsUser: 0 (root) — bị cấm"
+        }
+
+        containers[c] { c := input.review.object.spec.template.spec.containers[_] }
+        containers[c] { c := input.review.object.spec.containers[_] }
+
+        podsc[sc] { sc := input.review.object.spec.template.spec.securityContext }
+        podsc[sc] { sc := input.review.object.spec.securityContext }

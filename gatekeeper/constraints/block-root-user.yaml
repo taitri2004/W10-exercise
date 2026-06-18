@@ -1,0 +1,14 @@
+# Luật 3 (F-04): cấm runAsUser: 0 (chạy root).
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sBlockRootUser
+metadata:
+  name: block-root-user
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces: ["demo", "payments"]

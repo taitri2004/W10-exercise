@@ -1,0 +1,28 @@
+# Lab 1.3 — Custom ConstraintTemplate (tự viết Rego): bắt buộc workload có label `owner`.
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequireownerlabel
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequireOwnerLabel
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequireownerlabel
+
+        # label đọc ở pod template (Deployment/Rollout) nếu có, không thì ở chính object (Pod)
+        labels[k] = v { v := input.review.object.spec.template.metadata.labels[k] }
+        labels[k] = v {
+          not input.review.object.spec.template
+          v := input.review.object.metadata.labels[k]
+        }
+
+        violation[{"msg": msg}] {
+          not labels["owner"]
+          msg := sprintf("%v thiếu label bắt buộc `owner`", [input.review.object.kind])
+        }

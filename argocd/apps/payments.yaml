@@ -1,20 +1,21 @@
-# ArgoCD App: Deploy AnalysisTemplate cho canary analysis
+# Bài lớn — App hạ tầng tenant: ns + rbac + quota + netpol (tenants/payments/).
+# Không recurse -> bỏ qua test/ (manifest demo apply tay).
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: analysis
+  name: payments
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   project: default
   source:
     repoURL: https://github.com/taitri2004/W10-exercise.git
-    path: app-analysis
+    path: tenants/payments
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc
-    namespace: demo
+    namespace: payments
   syncPolicy:
     automated:
       prune: true

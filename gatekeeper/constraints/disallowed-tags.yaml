@@ -1,0 +1,16 @@
+# Luật 1 (F-01): cấm image :latest / không pin tag.
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sDisallowedTags
+metadata:
+  name: block-latest-tag
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces: ["demo", "payments"]
+  parameters:
+    tags: ["latest"]

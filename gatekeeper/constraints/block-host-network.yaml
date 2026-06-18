@@ -1,0 +1,14 @@
+# Luật 4: cấm hostNetwork: true.
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sBlockHostNetwork
+metadata:
+  name: block-host-network
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces: ["demo", "payments"]

@@ -1,0 +1,19 @@
+# Lab 2.2 — Sigstore ClusterImagePolicy: image khớp glob phải có chữ ký Cosign
+# khớp public key. Image chưa ký / sai key -> admission REJECT.
+# CHỈ enforce trên namespace có label policy.sigstore.dev/include=true.
+# >> Dán nội dung signing/cosign.pub vào authorities[0].key.data dưới đây <<
+apiVersion: policy.sigstore.dev/v1beta1
+kind: ClusterImagePolicy
+metadata:
+  name: require-signed-w10-api
+spec:
+  images:
+    - glob: "ghcr.io/taitri2004/w10-api**"
+  authorities:
+    - name: cosign-key
+      key:
+        data: |
+          -----BEGIN PUBLIC KEY-----
+          MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEKffJYTNAHSz8QkuRkhoI36ryZN8s
+          /ygPeajZMA1ABNu/dPQ3Y+mQYh9NbwI8qm7WhhK0rForTDX1y11URK9m2Q==
+          -----END PUBLIC KEY-----

@@ -1,0 +1,43 @@
+# Lab 1.1 — gắn 3 vai trò cho 3 user (subjects.kind: User).
+# alice -> developer (RoleBinding bó ns demo)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: alice-developer
+  namespace: demo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: developer
+subjects:
+  - kind: User
+    name: alice
+    apiGroup: rbac.authorization.k8s.io
+---
+# bob -> sre (ClusterRoleBinding: toàn cụm)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: bob-sre
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: sre
+subjects:
+  - kind: User
+    name: bob
+    apiGroup: rbac.authorization.k8s.io
+---
+# carol -> viewer (ClusterRoleBinding: toàn cụm, chỉ đọc)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: carol-viewer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: viewer
+subjects:
+  - kind: User
+    name: carol
+    apiGroup: rbac.authorization.k8s.io

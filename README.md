@@ -219,3 +219,52 @@ minikube stop -p w10
 minikube delete -p w10
 ```
 
+---
+
+# Bài tập lớn W10 — Onboard team `payments` (multi-tenant an toàn)
+
+Đón team thứ hai `payments` vào cụm đã siết bảo mật (Lab 1–2): cấp "phòng riêng",
+guardrail cũ **tự áp** cho team mới, 2 team không gọi qua lại nhau. Tất cả qua GitOps.
+
+## 2 câu "vì sao" (giải thích)
+1. **Vì sao guardrail cũ tự áp cho team B mà không viết luật mới?** Gatekeeper
+   Constraint và Sigstore ClusterImagePolicy là **cluster-scoped**, áp theo
+   *namespace/label/image-glob* chứ không theo team. Constraint match
+   `namespaces: [demo, payments]` và webhook soi mọi Pod khớp → chỉ cần thêm ns
+   `payments` vào match là kế thừa toàn bộ, không viết constraint mới.
+2. **Role/RoleBinding khác ClusterRoleBinding ra sao để giữ cô lập?**
+   `Role`+`RoleBinding` **bó trong ns `payments`** nên `payments-dev` chỉ có quyền
+   trong `payments`, không với sang `demo`. `ClusterRoleBinding` cấp quyền **toàn
+   cụm** (mọi ns) → phá cô lập. Vì vậy tenant dùng RoleBinding namespaced.
+
+## Cấu trúc thêm vào (so với platform W9)
+```
+rbac/                     # Lab 1.1 — 3 role alice/bob/carol
+gatekeeper/templates|constraints/  # Lab 1.2 (4) + 1.3 (custom owner-label)
+eso/                      # Lab 2.1 — SecretStore(fake) + ExternalSecret + consumer
+signing/ + policies/      # Lab 2.2 — cosign.pub + ClusterImagePolicy
+tenants/payments/         # Bài lớn — ns + rbac + quota + netpol (+ test/)
+apps/payments/            # Bài lớn — app team B (image đã ký)
+argocd/apps/*.yaml        # Application cho tất cả ở trên
+runbooks/ · evidence/
+```
+
+## Chạy (GitOps)
+```bash
+# Cluster CẦN Calico để NetworkPolicy enforce
+minikube start -p w10 --cpus=2 --memory=4000 --driver=docker --cni=calico
+kubectl config use-context w10
+# ArgoCD (xem Quick Start phía trên) rồi:
+kubectl apply -f argocd/root.yaml
+# Ký image + gắn label sigstore SAU khi ký (xem signing/README.md)
+```
+Thứ tự sync-wave: ns(-1) → controllers gatekeeper/eso/policy-controller(0) →
+rbac/alert/analysis(1) → config gatekeeper/eso/policies + api(2) → payments(3) →
+payments-app(4).
+
+Bằng chứng + checklist 4 chứng minh: `evidence/README.md`.
+
+> Lưu ý máy RAM thấp: chạy cả stack cùng lúc rất nặng — có thể bật từng nhóm App
+> để lấy evidence, không cần đồng thời. Constraint/policy chỉ deny trên ns `demo`
+> + `payments` nên không đụng hệ thống.
+

@@ -1,0 +1,14 @@
+# Luật 2 (F-02): bắt buộc cpu + memory limits.
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sContainerLimits
+metadata:
+  name: require-limits
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces: ["demo", "payments"]
