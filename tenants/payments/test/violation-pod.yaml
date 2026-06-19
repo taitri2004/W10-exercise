@@ -1,5 +1,3 @@
-# Bài lớn #4 (chứng minh) — manifest VI PHẠM, phải bị constraint cũ chặn:
-#  image :latest (block-latest-tag) · thiếu limits (require-limits) · thiếu owner (require-owner-label).
 apiVersion: v1
 kind: Pod
 metadata:

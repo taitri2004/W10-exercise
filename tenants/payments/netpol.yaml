@@ -1,5 +1,3 @@
-# Bài lớn #3 — cô lập mạng. Cần CNI enforce (minikube --cni=calico).
-# (1) default-deny INGRESS: chặn mọi traffic VÀO payments.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -9,7 +7,6 @@ spec:
   podSelector: {}
   policyTypes: ["Ingress"]
 ---
-# (2) EGRESS chỉ cho cùng namespace + DNS (chặn payments gọi ra demo).
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:

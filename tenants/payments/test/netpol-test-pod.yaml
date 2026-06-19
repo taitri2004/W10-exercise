@@ -1,4 +1,3 @@
-# Bài lớn #3 (chứng minh) — pod payments gọi sang demo; kỳ vọng bị NetworkPolicy chặn.
 apiVersion: v1
 kind: Pod
 metadata:

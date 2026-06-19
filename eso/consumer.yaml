@@ -1,4 +1,3 @@
-# Consumer đọc db-secret qua VOLUME -> Secret đổi thì file trong pod tự cập nhật, KHÔNG restart.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
