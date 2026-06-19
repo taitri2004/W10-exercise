@@ -1,5 +1,3 @@
-# Bài lớn #4 — app team B. KẾ THỪA guardrail cũ (không viết luật mới):
-# tuân thủ Gatekeeper (pin tag, limits, non-root, label owner) + dùng image ĐÃ KÝ.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,7 +20,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: api
-          image: ghcr.io/taitri2004/w10-api:0.0.1   # image ĐÃ KÝ ở Lab 2.2
+          image: ghcr.io/taitri2004/w10-api:0.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

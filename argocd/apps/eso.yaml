@@ -1,5 +1,4 @@
 # ArgoCD App: cài External Secrets Operator (Helm) + CRDs. Wave 0 = sớm.
-# replicas=1 cho cluster RAM thấp.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

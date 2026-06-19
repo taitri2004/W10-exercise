@@ -1,5 +1,3 @@
-# Rollout: Progressive delivery với canary strategy
-# Sync wave 0: Deploy trước để tạo pods
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
@@ -18,16 +16,16 @@ spec:
     metadata:
       labels:
         app: api
-        owner: team-platform        # qua custom constraint require-owner-label
+        owner: team-platform
     spec:
       securityContext:
-        runAsNonRoot: true           # qua constraint cấm chạy root
+        runAsNonRoot: true
         runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
       containers:
       - name: api
-        image: ghcr.io/taitri2004/w10-api:0.0.1   # image cua ban (build + ky o Lab 2.2)
+        image: ghcr.io/taitri2004/w10-api:0.0.1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

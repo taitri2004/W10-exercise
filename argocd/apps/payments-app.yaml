@@ -1,5 +1,4 @@
-# Bài lớn — App workload team B (apps/payments/). Wave 4 = sau khi hạ tầng tenant
-# + guardrail đã sẵn sàng. Kế thừa Gatekeeper + signature, KHÔNG luật mới.
+# Bài lớn — app workload team B (wave 4): kế thừa Gatekeeper + signature, không luật mới.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

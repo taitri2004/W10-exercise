@@ -1,5 +1,4 @@
 # ArgoCD App: cài OPA Gatekeeper controller (Helm). Wave 0 = sớm, trước constraint.
-# replicas=1 cho cluster RAM thấp (mặc định chart là 3).
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

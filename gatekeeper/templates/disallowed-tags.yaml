@@ -1,4 +1,4 @@
-# Template: cấm image dùng tag bị cấm (vd :latest). (gatekeeper-library style)
+# Template: cấm image dùng tag bị cấm (vd :latest).
 apiVersion: templates.gatekeeper.sh/v1
 kind: ConstraintTemplate
 metadata:
@@ -35,7 +35,6 @@ spec:
           endswith(container.image, concat(":", ["", tag]))
           msg := sprintf("container <%v> dùng tag bị cấm :%v (image %v)", [container.name, tag, container.image])
         }
-        # cấm luôn image không có tag (mặc định :latest)
         violation[{"msg": msg}] {
           container := input.review.object.spec.containers[_]
           not contains(container.image, ":")

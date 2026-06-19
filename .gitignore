@@ -1,18 +1,17 @@
-# Secrets - DO NOT COMMIT
 k8s-monitoring/email-secret.yaml
 k8s-monitoring/alertmanager-config.yaml
 **/email-secret.yaml
 *.secret.yaml
 
-# Cosign private key + AWS creds - DO NOT COMMIT (public key cosign.pub thì commit OK)
 cosign.key
 *.key
 aws-creds.yaml
 secret-store.yaml.local
 
-# IDE
 .vscode/
 .idea/
 
-# OS
 .DS_Store
+
+RUN-GUIDE.md
+notes.md

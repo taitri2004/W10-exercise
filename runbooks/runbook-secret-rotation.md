@@ -9,7 +9,7 @@
 ## Chẩn đoán
 ```bash
 kubectl -n demo get externalsecret db-creds
-kubectl -n demo describe externalsecret db-creds      # reason/lỗi auth
+kubectl -n demo describe externalsecret db-creds    
 kubectl -n demo get secret db-secret -o jsonpath='{.data.password}' | base64 -d
 ```
 

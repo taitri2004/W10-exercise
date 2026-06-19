@@ -1,4 +1,3 @@
-# CI validate manifest (W9 base). Path khop voi cau truc repo W10.
 name: validate
 on:
   pull_request:
@@ -8,7 +7,12 @@ on:
     - 'app-alert/**'
     - 'app-common/**'
     - 'argocd/**'
-    # W10 se them: rbac/**, gatekeeper/**, eso/**, signing/**
+    - 'rbac/**'
+    - 'gatekeeper/**'
+    - 'eso/**'
+    - 'policies/**'
+    - 'tenants/**'
+    - 'apps/**'
 
 jobs:
   validate:
@@ -22,8 +26,6 @@ jobs:
         tar -xzf kc.tgz
         sudo mv kubeconform /usr/local/bin/
 
-    # -ignore-missing-schemas: bo qua CRD chua biet schema (Rollout, Application,
-    # ServiceMonitor, PrometheusRule, AnalysisTemplate, Constraint, ExternalSecret...)
     - name: Validate manifests
       run: |
         kubeconform -strict -summary -ignore-missing-schemas \

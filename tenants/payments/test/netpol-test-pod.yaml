@@ -1,9 +1,4 @@
-# Bài lớn #3 (chứng minh) — pod trong payments thử gọi sang demo.
-# Tuân thủ Gatekeeper (pin tag + limits + owner) để được admit, rồi test mạng.
-# Apply tay (test/ không sync), xem log:
-#   kubectl apply -f tenants/payments/test/netpol-test-pod.yaml
-#   kubectl -n payments logs netpol-test
-# Kỳ vọng: gọi api.demo -> TIMEOUT (bị NetworkPolicy chặn); DNS vẫn phân giải.
+# Bài lớn #3 (chứng minh) — pod payments gọi sang demo; kỳ vọng bị NetworkPolicy chặn.
 apiVersion: v1
 kind: Pod
 metadata:

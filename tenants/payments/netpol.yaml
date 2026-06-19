@@ -8,10 +8,8 @@ metadata:
 spec:
   podSelector: {}
   policyTypes: ["Ingress"]
-  # không có ingress rule = deny tất cả
 ---
-# (2) EGRESS chỉ cho cùng namespace + DNS. Đây mới là cái chặn payments GỌI RA
-#     service của demo (deny-ingress một mình KHÔNG chặn được egress).
+# (2) EGRESS chỉ cho cùng namespace + DNS (chặn payments gọi ra demo).
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -21,10 +19,8 @@ spec:
   podSelector: {}
   policyTypes: ["Egress"]
   egress:
-    # cho gọi trong cùng namespace payments
     - to:
         - podSelector: {}
-    # cho phép DNS tới CoreDNS (kube-system)
     - to:
         - namespaceSelector:
             matchLabels:

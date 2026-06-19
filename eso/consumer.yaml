@@ -1,6 +1,4 @@
-# Consumer đọc db-secret qua VOLUME (file), không qua env -> khi Secret đổi,
-# kubelet cập nhật file trong pod, KHÔNG restart. In giá trị mỗi 5s để quan sát.
-# Tuân thủ Gatekeeper: pin tag, có limits, non-root, có label owner.
+# Consumer đọc db-secret qua VOLUME -> Secret đổi thì file trong pod tự cập nhật, KHÔNG restart.
 apiVersion: apps/v1
 kind: Deployment
 metadata:

@@ -15,7 +15,6 @@ spec:
       rego: |
         package k8srequireownerlabel
 
-        # label đọc ở pod template (Deployment/Rollout) nếu có, không thì ở chính object (Pod)
         labels[k] = v { v := input.review.object.spec.template.metadata.labels[k] }
         labels[k] = v {
           not input.review.object.spec.template

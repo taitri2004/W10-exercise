@@ -1,4 +1,3 @@
-# Build and push Docker image to GitHub Container Registry
 name: Build and Push Image
 
 on:
@@ -54,7 +53,6 @@ jobs:
             type=raw,value=${{ steps.semver.outputs.version }}
             type=sha,prefix=v${{ steps.semver.outputs.version }}-
 
-      # Lab 2.2a (F-05): build (chưa push) rồi Trivy scan trước khi đẩy lên registry
       - name: Build image (load, no push)
         uses: docker/build-push-action@v6
         with:
@@ -80,7 +78,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # Lab 2.2b (F-06): ký image theo digest bằng cosign key-based
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3
 

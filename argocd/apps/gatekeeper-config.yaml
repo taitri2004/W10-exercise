@@ -1,6 +1,4 @@
-# ArgoCD App: ConstraintTemplate (wave 2) + Constraint (wave 3) từ fork.
-# Wave 2 (App-level) = chạy SAU khi controller gatekeeper (wave 0) đã lên.
-# retry vì template/constraint có thể apply trước khi webhook gatekeeper sẵn sàng.
+# ArgoCD App: ConstraintTemplate (wave 2) + Constraint (wave 3); sau controller gatekeeper.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

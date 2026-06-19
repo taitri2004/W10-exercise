@@ -9,9 +9,9 @@
 
 ## Chẩn đoán
 ```bash
-kubectl get constraints                       # constraint nào đang deny
+kubectl get constraints          
 kubectl get clusterimagepolicy
-kubectl get ns demo --show-labels | grep sigstore   # ns có enforce signature?
+kubectl get ns demo --show-labels | grep sigstore
 ```
 
 ## Xử lý

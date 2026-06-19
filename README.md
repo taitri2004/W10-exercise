@@ -241,7 +241,7 @@ guardrail cũ **tự áp** cho team mới, 2 team không gọi qua lại nhau. T
 ```
 rbac/                     # Lab 1.1 — 3 role alice/bob/carol
 gatekeeper/templates|constraints/  # Lab 1.2 (4) + 1.3 (custom owner-label)
-eso/                      # Lab 2.1 — SecretStore(fake) + ExternalSecret + consumer
+eso/                      # Lab 2.1 — SecretStore(AWS Secrets Manager) + ExternalSecret + consumer
 signing/ + policies/      # Lab 2.2 — cosign.pub + ClusterImagePolicy
 tenants/payments/         # Bài lớn — ns + rbac + quota + netpol (+ test/)
 apps/payments/            # Bài lớn — app team B (image đã ký)
@@ -254,6 +254,10 @@ runbooks/ · evidence/
 # Cluster CẦN Calico để NetworkPolicy enforce
 minikube start -p w10 --cpus=2 --memory=4000 --driver=docker --cni=calico
 kubectl config use-context w10
+# Lab 2.1 dùng AWS Secrets Manager: tạo secret trên AWS + cấp creds cho ESO (KHÔNG commit)
+aws secretsmanager create-secret --name demo/db/password --secret-string '<value>' --region ap-southeast-1
+kubectl create secret generic aws-creds -n demo \
+  --from-literal=access-key=$AWS_ACCESS_KEY_ID --from-literal=secret-key=$AWS_SECRET_ACCESS_KEY
 # ArgoCD (xem Quick Start phía trên) rồi:
 kubectl apply -f argocd/root.yaml
 # Ký image + gắn label sigstore SAU khi ký (xem signing/README.md)

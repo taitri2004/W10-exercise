@@ -1,5 +1,4 @@
-# ArgoCD App: SecretStore + ExternalSecret + consumer từ fork. Wave 2 = sau ESO operator.
-# retry vì CRD (ClusterSecretStore/ExternalSecret) do operator cài, phải có trước.
+# ArgoCD App: SecretStore + ExternalSecret + consumer. Wave 2 = sau ESO operator.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
